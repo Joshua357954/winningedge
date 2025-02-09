@@ -10,16 +10,32 @@ const mockUser = {
 };
 
 const mockDBD = {
-    balance: { bal1: 0, bal2: 0 },
-    dataLevel2: { totalInvestments: 0, totalEarnings: 0, activeInvestments: 0 },
-    transactions: [],
-  }
+  balance: { bal1: 0, bal2: 0 },
+  dataLevel2: { totalInvestments: 0, totalEarnings: 0, activeInvestments: 0 },
+  transactions: [],
+};
 
+// Function to check if running in the browser
+const isBrowser = () => typeof window !== "undefined";
+
+// Function to safely get data from localStorage
+const getLocalStorage = (key, fallback) => {
+  if (!isBrowser()) return fallback;
+  try {
+    const storedValue = localStorage.getItem(key);
+    return storedValue ? JSON.parse(storedValue) : fallback;
+  } catch (error) {
+    console.error(`Error reading localStorage key "${key}":`, error);
+    return fallback;
+  }
+};
+
+// Zustand store
 const useAuthStore = create((set) => ({
-  user: JSON.parse(localStorage.getItem("user")),
+  user: getLocalStorage("user", null),
   accessToken: null,
-  isAuthenticated: false,
-  dashboardData: JSON.parse(localStorage.getItem("DashboardData")) || mockDBD,
+  isAuthenticated: !!getLocalStorage("user", null),
+  dashboardData: getLocalStorage("DashboardData", mockDBD),
   loading: false,
   error: null,
 
@@ -31,6 +47,9 @@ const useAuthStore = create((set) => ({
         params: { id, email },
       });
       set({ user: response.data.user, loading: false, isAuthenticated: true });
+      if (isBrowser()) {
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+      }
     } catch (error) {
       console.error("Failed to fetch user, using mock data", error);
       set({
@@ -39,15 +58,25 @@ const useAuthStore = create((set) => ({
         isAuthenticated: true,
         error: "Using mock data due to API failure",
       });
+      if (isBrowser()) {
+        localStorage.setItem("user", JSON.stringify(mockUser));
+      }
     }
   },
 
   login: (user, token) => {
     set({ user, accessToken: token, isAuthenticated: true });
+    if (isBrowser()) {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
   },
 
   logout: () => {
     set({ user: null, accessToken: null, isAuthenticated: false });
+    if (isBrowser()) {
+      localStorage.removeItem("user");
+      localStorage.removeItem("DashboardData");
+    }
     Cookies.remove("refresh_token");
   },
 
@@ -64,15 +93,22 @@ const useAuthStore = create((set) => ({
       set({ user: null, accessToken: null, isAuthenticated: false });
     }
   },
+
   setAccessToken: (data) => set({ accessToken: data }),
+
   setUser: (userData) => {
-    localStorage.setItem("user", JSON.stringify(userData));
     set({ user: userData });
+    if (isBrowser()) {
+      localStorage.setItem("user", JSON.stringify(userData));
+    }
   },
+
   setDashboardData: (data) => {
-    localStorage.setItem("DashboardData", JSON.stringify(data));
     set({ dashboardData: data });
-  }
+    if (isBrowser()) {
+      localStorage.setItem("DashboardData", JSON.stringify(data));
+    }
+  },
 }));
 
 export default useAuthStore;
