@@ -35,17 +35,14 @@ function Withdraw() {
       userId: user?.email || "",
     });
   };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const handleDepositClick = (deposit: any) => {
+  const handleDepositClick = (deposit) => {
     setFormData((prevState) => ({
       ...prevState,
       depositId: deposit?.id,
@@ -53,7 +50,7 @@ function Withdraw() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.depositId) {
