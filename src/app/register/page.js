@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Link from "next/link";
 import TheHead from "@/components/theHead";
 import ProtectedRoute from "@/components/protectedRoute";
 
@@ -27,40 +28,31 @@ function Register() {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      toast("⚠️ Passwords do not match");
+      toast.error("⚠️ Passwords do not match");
       return;
     }
 
     try {
       const { fullName, email, phone, password, confirmPassword } = formData;
 
-      // Ensure correct field names match the backend expectations
-      const requestBody = {
-        fullName, // Make sure API expects "fullName"
-        email,
-        phone,
-        password,
-        confirmPassword,
-      };
-      toast.loading("Registeration In Progress");
+      const requestBody = { fullName, email, phone, password, confirmPassword };
+
+      toast.loading("Registration In Progress...");
       const response = await axios.post("/api/auth/register", requestBody);
 
       if (response.status === 201) {
-        toast.dismiss;
-        toast.success("User Registeration Successful");
+        toast.dismiss();
+        toast.success("User Registration Successful");
         router.push("/dashboard"); // Redirect after successful registration
       }
     } catch (error) {
-      toast.dismiss;
-      toast.loading("An Error Occured , Try Again .");
+      toast.dismiss();
+      toast.error("An Error Occurred, Try Again.");
       console.error("Error during registration", error);
 
-      // Log full response for debugging
       if (error.response) {
         console.error("Server Response:", error.response.data);
-        toast(error.response.data.error || "Registration failed");
-      } else {
-        toast("Something went wrong. Please try again.");
+        toast.error(error.response.data.error || "Registration failed");
       }
     }
   };
@@ -144,7 +136,7 @@ function Register() {
                 SIGN UP
               </button>
               <p className="text-center">
-                Already have an account? <a href="/login">LOGIN</a>
+                Already have an account? <Link href="/login">LOGIN</Link>
               </p>
             </form>
           </div>

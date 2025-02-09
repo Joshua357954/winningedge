@@ -22,8 +22,8 @@ const isBrowser = () => typeof window !== "undefined";
 const getLocalStorage = (key, fallback) => {
   if (!isBrowser()) return fallback;
   try {
-    const storedValue = localStorage.getItem(key);
-    return storedValue ? JSON.parse(storedValue) : fallback;
+    const storedValue = localStorage?.getItem(key);
+    return storedValue ? JSON?.parse(storedValue) : fallback;
   } catch (error) {
     console.error(`Error reading localStorage key "${key}":`, error);
     return fallback;
@@ -32,7 +32,7 @@ const getLocalStorage = (key, fallback) => {
 
 // Zustand store
 const useAuthStore = create((set) => ({
-  user: getLocalStorage("user", null),
+  user: getLocalStorage("user", mockUser),
   accessToken: null,
   isAuthenticated: !!getLocalStorage("user", null),
   dashboardData: getLocalStorage("DashboardData", mockDBD),
