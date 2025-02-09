@@ -15,7 +15,8 @@ import toast from "react-hot-toast";
 import ProtectedRoute from "@/components/protectedRoute";
 
 function Deposit() {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+  const { user } = useUserStore();
   const [amount, setAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [activeInvestments, setActiveInvestments] = useState([]);
@@ -25,22 +26,13 @@ function Deposit() {
     totalAmount: "0.00",
   });
 
-  // Ensure `useUserStore()` runs only on the client side
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setUser(useUserStore().user);
-    }
-  }, []);
+    const numAmount = Number(amount);
+    const dailyProfit = (numAmount * 0.02).toFixed(2);
+    const totalProfit = (dailyProfit * 30).toFixed(2);
+    const totalAmount = (numAmount + Number(totalProfit)).toFixed(2);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const numAmount = Number(amount);
-      const dailyProfit = (numAmount * 0.02).toFixed(2);
-      const totalProfit = (dailyProfit * 30).toFixed(2);
-      const totalAmount = (numAmount + Number(totalProfit)).toFixed(2);
-
-      setCalculatedValues({ dailyProfit, totalProfit, totalAmount });
-    }
+    setCalculatedValues({ dailyProfit, totalProfit, totalAmount });
   }, [amount]);
 
   useEffect(() => {
@@ -88,12 +80,6 @@ function Deposit() {
             `Error: ${error.response.data.message || error.response.statusText}`
           );
           console.error("Server error:", error.response);
-        } else if (error.request) {
-          toast.error("Network error: No response received.");
-          console.error("Network error:", error.request);
-        } else {
-          toast.error(`Error: ${error.message}`);
-          console.error("Error:", error.message);
         }
       } finally {
         setIsLoading(false);
@@ -174,7 +160,10 @@ function Deposit() {
                           min="1"
                         />
                         <div className="row cta__space">
-                          <div className="col-lg-4" style={{ marginTop: "20px" }}>
+                          <div
+                            className="col-lg-4"
+                            style={{ marginTop: "20px" }}
+                          >
                             <div className="daily-profit column">
                               <p className="secondary content__space--small">
                                 Daily Profit
@@ -183,7 +172,10 @@ function Deposit() {
                             </div>
                           </div>
                           <div className="col-lg-4">
-                            <div className="total-profit column__space" style={{ marginTop: "20px" }}>
+                            <div
+                              className="total-profit column__space"
+                              style={{ marginTop: "20px" }}
+                            >
                               <p className="secondary content__space--small">
                                 Total Profit <small>(In 30 days)</small>
                               </p>
@@ -191,9 +183,13 @@ function Deposit() {
                             </div>
                           </div>
                           <div className="col-lg-4">
-                            <div className="total-profit column__space" style={{ marginTop: "20px" }}>
+                            <div
+                              className="total-profit column__space"
+                              style={{ marginTop: "20px" }}
+                            >
                               <p className="secondary content__space--small">
-                                Total CashOut <small>(Initial Deposit + Profit)</small>
+                                Total CashOut{" "}
+                                <small>(Initial Deposit + Profit)</small>
                               </p>
                               <h3>₦ {calculatedValues.totalAmount}</h3>
                             </div>
@@ -201,13 +197,18 @@ function Deposit() {
                         </div>
                         <div className="plan__cta text-start">
                           {isLoading ? (
-                            <p className="text-primary fw-bold">Processing...</p>
+                            <p className="text-primary fw-bold">
+                              Processing...
+                            </p>
                           ) : activeInvestments?.length > 0 ? (
                             <p className="text-danger fw-bold">
                               You cannot invest (Active Investment Running)
                             </p>
                           ) : (
-                            <button className="btn button primary" type="submit">
+                            <button
+                              className="btn button primary"
+                              type="submit"
+                            >
                               Start Invest Now
                             </button>
                           )}
