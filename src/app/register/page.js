@@ -17,6 +17,7 @@ function Register() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // Added loading state
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -25,16 +26,17 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
 
+    setLoading(true); // Set loading true before request
+    toast.loading("Registration In Progress...");
+
     try {
       const { fullName, email, phone, password } = formData;
 
-      // Ensure correct field names match the backend expectations
       const requestBody = {
         fullName,
         email,
@@ -42,21 +44,21 @@ function Register() {
         password,
       };
 
-      toast.loading("Registration In Progress..."); // Toast during registration
-
       const response = await axios.post("/api/auth/register", requestBody);
 
       if (response.status === 201) {
         toast.dismiss(); // Dismiss loading toast
         toast.success("User Registration Successful");
-        router.push("/dashboard"); // Redirect after successful registration
+        router.push("/dashboard");
       }
     } catch (error) {
       toast.dismiss(); // Dismiss loading toast on error
       toast.error(
         error?.response?.data?.message || "An error occurred, please try again."
-      ); // Show error message
+      );
       console.error("Error during registration:", error);
+    } finally {
+      setLoading(false); // Reset loading after request
     }
   };
 
@@ -135,8 +137,12 @@ function Register() {
                   onChange={handleChange}
                 />
               </div>
-              <button type="submit" className="button content__space">
-                SIGN UP
+              <button
+                type="submit"
+                className="button content__space"
+                disabled={loading} // Disable button while loading
+              >
+                {loading ? "Signing Up..." : "SIGN UP"}
               </button>
               <p className="text-center">
                 Already have an account? <a href="/login">LOGIN</a>
