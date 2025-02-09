@@ -1,3 +1,10 @@
+@import url("/assets/vendors/bootstrap/css/bootstrap.min.css");
+@import url("/assets/vendors/font-awesome/css/all.min.css");
+@import url("/assets/vendors/nice-select/css/nice-select.css");
+@import url("/assets/vendors/magnific-popup/css/magnific-popup.css");
+@import url("/assets/vendors/slick/css/slick.css");
+@import url("/assets/css/style.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
