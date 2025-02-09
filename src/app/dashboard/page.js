@@ -98,14 +98,15 @@ function Dashboard() {
 
                             <div
                               className="d-flex gap-3"
-                              style={{ justifyContent: "start" }}
+                              style={{ justifyContent: "start",width:'100%' }}
                             >
                               <a
                                 href="/deposit"
                                 className="button"
                                 style={{
                                   borderRadius: "0.5rem",
-                                  flexShrink: 0, // Prevents the button from shrinking
+                                  width:'50%'
+                                  // flexShrink: 0, Prevents the button from shrinking
                                 }}
                               >
                                 Deposit
@@ -115,7 +116,8 @@ function Dashboard() {
                                 className="button"
                                 style={{
                                   borderRadius: "0.5rem",
-                                  flexShrink: 0, // Prevents the button from shrinking
+                                  width:'50%'
+                                  // flexShrink: 0, Prevents the button from shrinking
                                 }}
                               >
                                 Withdraw
