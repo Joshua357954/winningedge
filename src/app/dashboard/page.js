@@ -92,17 +92,20 @@ function Dashboard() {
                               </div>
                             ) : (
                               <p className="tertiary">
-                                Build your investment portfolio 👇🏽
+                                Build your investment portfolio 👇👇🏽
                               </p>
                             )}
 
-                            <div style={{ display: "flex", gap: "20px" }}>
+                            <div
+                              className="d-flex gap-3"
+                              style={{ justifyContent: "start" }}
+                            >
                               <a
                                 href="/deposit"
                                 className="button"
                                 style={{
                                   borderRadius: "0.5rem",
-                                  marginRight: "20px",
+                                  flexShrink: 0, // Prevents the button from shrinking
                                 }}
                               >
                                 Deposit
@@ -110,7 +113,10 @@ function Dashboard() {
                               <a
                                 href="/withdraw"
                                 className="button"
-                                style={{ borderRadius: "0.5rem" }}
+                                style={{
+                                  borderRadius: "0.5rem",
+                                  flexShrink: 0, // Prevents the button from shrinking
+                                }}
                               >
                                 Withdraw
                               </a>
