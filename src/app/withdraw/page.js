@@ -23,7 +23,7 @@ function Withdraw() {
     account_name: "",
     bank_name: "",
     depositId: "",
-    userId: user?.email,
+    userId: user?.email || "",
   });
 
   const resetForm = () => {
@@ -32,30 +32,36 @@ function Withdraw() {
       account_name: "",
       bank_name: "",
       depositId: "",
-      userId: user?.email,
+      userId: user?.email || "",
     });
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  const handleDepositClick = (deposit) => {
-    setFormData({
-      ...formData,
+  const handleDepositClick = (deposit: any) => {
+    setFormData((prevState) => ({
+      ...prevState,
       depositId: deposit?.id,
       amount: deposit?.amount,
-    });
+    }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!formData.depositId) {
+      toast.error("Please select an investment to withdraw.");
+      return;
+    }
+
     try {
-      if (!formData.depositId) {
-        toast.error("Please select an investment to withdraw.");
-        return;
-      }
       const response = await axios.post("/api/investment/withdraw", formData);
       toast.success("Withdrawal request submitted successfully!");
       resetForm();
@@ -73,20 +79,24 @@ function Withdraw() {
   useEffect(() => {
     async function getWithdrawalble() {
       toast.loading("Fetching Available Investments");
+
       try {
         const { data } = await axios.get(
           `/api/investment/get?userId=${user?.email}`
         );
         toast.dismiss();
         toast.success("Completed Check");
-        setCompletedInvestments(data.completedInvestments);
+        setCompletedInvestments(data?.completedInvestments || []);
       } catch (error) {
         toast.dismiss();
         toast.error("Error fetching investments");
       }
     }
-    getWithdrawalble();
-  }, [user]);
+
+    if (user?.email) {
+      getWithdrawalble();
+    }
+  }, [user?.email]);
 
   return (
     <>
@@ -118,32 +128,27 @@ function Withdraw() {
                               Withdrawal Amount
                             </label>
                             <div className="d-flex flex-wrap gap-3">
-                              <div className="d-flex flex-wrap gap-3">
-                                {completedInvestments?.length > 0 ? (
-                                  completedInvestments
-                                    .filter((inv) => !inv?.reInvested) // Filter out reinvested investments
-                                    .map((inv, index) => (
-                                      <div
-                                        key={index}
-                                        className={`btn px-4 py-2 rounded shadow-sm ${
-                                          formData?.depositId === inv?.id
-                                            ? "button primary"
-                                            : "button btn-success"
-                                        }`}
-                                        style={{ borderRadius: ".3rem" }}
-                                        onClick={() => handleDepositClick(inv)}
-                                      >
-                                        {ToDate(inv.datetime).split(",")[0]}{" "}
-                                        Inv.{" "}
-                                        {prettifyAmountInNaira(
-                                          inv?.totalAmount
-                                        )}
-                                      </div>
-                                    ))
-                                ) : (
-                                  <p>No completed investments found.</p>
-                                )}
-                              </div>
+                              {completedInvestments?.length > 0 ? (
+                                completedInvestments
+                                  .filter((inv) => !inv?.reInvested) // Filter out reinvested investments
+                                  .map((inv, index) => (
+                                    <div
+                                      key={index}
+                                      className={`btn px-4 py-2 rounded shadow-sm ${
+                                        formData?.depositId === inv?.id
+                                          ? "button primary"
+                                          : "button btn-success"
+                                      }`}
+                                      style={{ borderRadius: ".3rem" }}
+                                      onClick={() => handleDepositClick(inv)}
+                                    >
+                                      {ToDate(inv.datetime).split(",")[0]} Inv.{" "}
+                                      {prettifyAmountInNaira(inv?.totalAmount)}
+                                    </div>
+                                  ))
+                              ) : (
+                                <p>No completed investments found.</p>
+                              )}
                             </div>
                           </div>
 
