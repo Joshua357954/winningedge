@@ -1,15 +1,15 @@
-"use client"
+"use client";
 import React from "react";
 import Avatar from "./avatar";
 import useUserStore from "@/store/userStore";
 import { Toaster } from "react-hot-toast";
 
 export default function navbar() {
-    const {user} = useUserStore()
+  const { user } = useUserStore();
 
   return (
     <header class="header__dashboard header__alt">
-      <Toaster/>
+      <Toaster />
       <nav class="navbar navbar-expand-xl">
         <div class="container">
           <a class="navbar-brand" href="/dashboard">
@@ -17,10 +17,10 @@ export default function navbar() {
           </a>
           <div class="navbar__out order-2 order-xl-3">
             <div class="dashboard__nav">
+              <a href="javascript:void(0)" class="profile__small">
+                <Avatar name={user?.name} />
+              </a>
               <div class="profile__meta">
-                <a href="javascript:void(0)" class="profile__small">
-                  <Avatar name={user?.name} />
-                </a>
                 <div class="profile__info">
                   <div class="profile__info__head">
                     <Avatar name={user?.name} />
@@ -32,7 +32,7 @@ export default function navbar() {
                           class="__cf_email__"
                           data-cfemail="cfbda0a8aabdf7fb8fa8a2aea6a3e1aca0a2"
                         >
-                         {user?.email}
+                          {user?.email}
                         </a>
                       </p>
                     </div>
