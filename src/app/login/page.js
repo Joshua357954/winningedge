@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import axios from "axios";
 import TheHead from "@/components/theHead";
@@ -11,7 +12,6 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const { setUser } = useUserStore();
   const router = useRouter();
@@ -19,23 +19,18 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
-    toast.loading("Logging In")
+    toast.loading("Logging In...");
 
     try {
-      const response = await axios.post("/api/auth/login", {
-        email,
-        password,
-      });
+      const response = await axios.post("/api/auth/login", { email, password });
 
       const user = response.data.user;
-      toast.dismiss()
+      toast.dismiss();
       setUser(user);
-      console.log(user);
-      toast.success(`Welcome, Fam ${(user?.name)}`);
+      toast.success(`Welcome, ${user?.name || "Fam"}!`);
       router.push("/dashboard");
     } catch (err) {
-      toast.dismiss
+      toast.dismiss();
       toast.error(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
@@ -60,7 +55,7 @@ function Login() {
           <div className="register__area login__area">
             <h3 className="content__space--small text-center">Welcome Back!</h3>
             <p className="text-center mb-55">Enter your details below.</p>
-            {/* {error && <p className="error-message">{error}</p>} */}
+
             <form onSubmit={handleSubmit}>
               <div className="input__area text-start content__space">
                 <label htmlFor="loginMail" className="content__space--small">
@@ -75,6 +70,7 @@ function Login() {
                   required
                 />
               </div>
+
               <div className="input__area text-start content__space--small">
                 <label htmlFor="loginPass" className="content__space--small">
                   Enter Password
@@ -90,6 +86,7 @@ function Login() {
                   />
                 </div>
               </div>
+
               <button
                 type="submit"
                 className="button content__space"
@@ -97,6 +94,7 @@ function Login() {
               >
                 {loading ? "Logging in..." : "LOG IN"}
               </button>
+
               <p className="text-center">
                 Don't have an account? <a href="/register">SIGN UP</a>
               </p>

@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "@/components/navbar";
@@ -22,7 +23,6 @@ function Investment() {
         const { data } = await axios.get(
           `/api/investment/get?userId=${user?.email}`
         );
-        // alert(JSON.stringify(data?.activeInvestments));
         toast.success("Investments Fetched");
         setActiveInvestments(data?.activeInvestments);
         setCompletedInvestments(data?.completedInvestments);
@@ -42,15 +42,11 @@ function Investment() {
 
     try {
       toast.loading("Processing reinvestment...");
-
       const { data } = await axios.post("/api/investment/reInvest", {
         depositId,
       });
-
       toast.dismiss();
       toast.success("Reinvestment successful!");
-
-      // Optional: Refresh data or update UI here
     } catch (error) {
       toast.dismiss();
       toast.error(
@@ -77,15 +73,14 @@ function Investment() {
                   </div>
 
                   {loading ? (
-                    <div class="d-flex justify-content-center mt-5 vh-100">
-                      <p class="mt-3 fw-semibold text-muted">
+                    <div className="d-flex justify-content-center mt-5 vh-100">
+                      <p className="mt-3 fw-semibold text-muted">
                         Loading investments...
                       </p>
                     </div>
                   ) : (
                     <div className="deposit__history">
                       <div className="row">
-                        {/* Active Investments */}
                         <div className="col-lg-6">
                           <div className="deposit__history__inner column__space">
                             <div className="deposit__history__head">
@@ -94,10 +89,9 @@ function Investment() {
                                 <i className="fas fa-angle-down"></i>
                               </a>
                             </div>
-
                             <div className="deposit__history__wrapper">
                               {activeInvestments?.length > 0 ? (
-                                activeInvestments?.map((investment, index) => (
+                                activeInvestments.map((investment, index) => (
                                   <div
                                     key={index}
                                     className="deposit__history__single__item"
@@ -137,7 +131,6 @@ function Investment() {
                           </div>
                         </div>
 
-                        {/* Completed Investments */}
                         <div className="col-lg-6">
                           <div className="deposit__history__inner">
                             <div className="deposit__history__head">
@@ -148,7 +141,7 @@ function Investment() {
                             </div>
                             <div className="deposit__history__wrapper">
                               {completedInvestments?.length > 0 ? (
-                                completedInvestments?.map(
+                                completedInvestments.map(
                                   (investment, index) => (
                                     <div
                                       key={index}
@@ -181,7 +174,11 @@ function Investment() {
                                             )}
                                           </h6>
                                         </div>
-                                        {investment?.reInvested ? <p className="method__amount">ReInvested</p> : (
+                                        {investment?.reInvested ? (
+                                          <p className="method__amount">
+                                            ReInvested
+                                          </p>
+                                        ) : (
                                           <div className="d-flex flex-column gap-2">
                                             <button
                                               className="btn btn-primary px-3 py-1 rounded"
@@ -191,7 +188,6 @@ function Investment() {
                                             >
                                               ReInvest
                                             </button>
-
                                             <a
                                               href="/withdraw"
                                               className="btn btn-secondary px-3 py-1 rounded"

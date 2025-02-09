@@ -135,7 +135,9 @@ function Withdraw() {
                                       >
                                         {ToDate(inv.datetime).split(",")[0]}{" "}
                                         Inv.{" "}
-                                        {prettifyAmountInNaira(inv?.totalAmount)}
+                                        {prettifyAmountInNaira(
+                                          inv?.totalAmount
+                                        )}
                                       </div>
                                     ))
                                 ) : (

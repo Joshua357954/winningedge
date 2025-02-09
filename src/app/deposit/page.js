@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import ProtectedRoute from "@/components/protectedRoute";
 
 function Deposit() {
-  const { user } = useUserStore();
+  const [user, setUser] = useState(null);
   const [amount, setAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [activeInvestments, setActiveInvestments] = useState([]);
@@ -24,6 +24,13 @@ function Deposit() {
     totalProfit: "0.00",
     totalAmount: "0.00",
   });
+
+  // Ensure `useUserStore()` runs only on the client side
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUser(useUserStore().user);
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -38,12 +45,14 @@ function Deposit() {
 
   useEffect(() => {
     const fetchInvestments = async () => {
+      if (!user) return;
+
       try {
         const { data } = await axios.get(
           `/api/investment/get?userId=${user?.email}`
         );
         toast.success("Checking Active Investments Complete");
-        setActiveInvestments(data?.activeInvestments);
+        setActiveInvestments(data?.activeInvestments || []);
       } catch (error) {
         toast.error("Checking Investments Error");
         console.error("Error fetching investment data:", error);
@@ -53,28 +62,28 @@ function Deposit() {
     };
 
     fetchInvestments();
-  }, []);
+  }, [user]);
 
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
+      if (!user) return toast.error("User not found. Please log in.");
       if (activeInvestments?.length > 0)
         return toast.error("You Have A Running Investment");
 
       const data = { amount, userId: user?.email };
 
       try {
-        toast.loading("Creating Deposit Order");
+        toast.loading("Creating Deposit Order...");
         const response = await axios.post("/api/investment/deposit", data);
+        toast.dismiss();
         if (response.data.message) {
           setAmount(0);
-          toast.dismiss()
           toast.success("Deposit Complete");
         }
-        console.log(response.data);
       } catch (error) {
+        toast.dismiss();
         if (error.response) {
-          toast.dismiss()
           toast.error(
             `Error: ${error.response.data.message || error.response.statusText}`
           );
@@ -90,7 +99,7 @@ function Deposit() {
         setIsLoading(false);
       }
     },
-    [amount, user?.email]
+    [amount, user, activeInvestments]
   );
 
   return (
@@ -165,10 +174,7 @@ function Deposit() {
                           min="1"
                         />
                         <div className="row cta__space">
-                          <div
-                            className="col-lg-4"
-                            style={{ marginTop: "20px" }}
-                          >
+                          <div className="col-lg-4" style={{ marginTop: "20px" }}>
                             <div className="daily-profit column">
                               <p className="secondary content__space--small">
                                 Daily Profit
@@ -177,10 +183,7 @@ function Deposit() {
                             </div>
                           </div>
                           <div className="col-lg-4">
-                            <div
-                              className="total-profit column__space"
-                              style={{ marginTop: "20px" }}
-                            >
+                            <div className="total-profit column__space" style={{ marginTop: "20px" }}>
                               <p className="secondary content__space--small">
                                 Total Profit <small>(In 30 days)</small>
                               </p>
@@ -188,13 +191,9 @@ function Deposit() {
                             </div>
                           </div>
                           <div className="col-lg-4">
-                            <div
-                              className="total-profit column__space"
-                              style={{ marginTop: "20px" }}
-                            >
+                            <div className="total-profit column__space" style={{ marginTop: "20px" }}>
                               <p className="secondary content__space--small">
-                                Total CashOut{" "}
-                                <small>(Initial Deposit + Profit)</small>
+                                Total CashOut <small>(Initial Deposit + Profit)</small>
                               </p>
                               <h3>₦ {calculatedValues.totalAmount}</h3>
                             </div>
@@ -202,18 +201,13 @@ function Deposit() {
                         </div>
                         <div className="plan__cta text-start">
                           {isLoading ? (
-                            <p className="text-primary fw-bold">
-                              Processing...
-                            </p>
+                            <p className="text-primary fw-bold">Processing...</p>
                           ) : activeInvestments?.length > 0 ? (
                             <p className="text-danger fw-bold">
                               You cannot invest (Active Investment Running)
                             </p>
                           ) : (
-                            <button
-                              className="btn button primary"
-                              type="submit"
-                            >
+                            <button className="btn button primary" type="submit">
                               Start Invest Now
                             </button>
                           )}
