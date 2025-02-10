@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Next.js 13 routing
 import { usePathname } from "next/navigation";
 import useAuthStore from "@/store/userStore";
+import Loader from "./Loader";
 
 const withProtectedRoute = (
   WrappedComponent,
@@ -35,7 +36,7 @@ const withProtectedRoute = (
 
     // Show loading state until routing logic is processed
     if (loading) {
-      return <div>Loading...</div>;
+      return <Loader loading={loading} />;
     }
 
     // Only render wrapped component if user is allowed to access the page

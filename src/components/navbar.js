@@ -1,48 +1,49 @@
 "use client";
+
 import React from "react";
+import Link from "next/link";
 import Avatar from "./avatar";
 import useUserStore from "@/store/userStore";
 import { Toaster } from "react-hot-toast";
 
-export default function navbar() {
+export default function Navbar() {
   const { user } = useUserStore();
 
   return (
-    <header class="header__dashboard header__alt">
+    <header className="header__dashboard header__alt">
       <Toaster />
-      <nav class="navbar navbar-expand-xl">
-        <div class="container">
-          <a class="navbar-brand" href="/dashboard">
-            <img src="/assets/images/logo.png" alt="Logo" class="logo" />
-          </a>
-          <div class="navbar__out order-2 order-xl-3">
-            <div class="dashboard__nav">
-              <a href="javascript:void(0)" class="profile__small">
+      <nav className="navbar navbar-expand-xl">
+        <div className="container">
+          <Link className="navbar-brand" href="/dashboard">
+            <img src="/assets/images/logo.png" alt="Logo" className="logo" />
+          </Link>
+          <div className="navbar__out order-2 order-xl-3">
+            <div className="dashboard__nav">
+              <button className="profile__small">
                 <Avatar name={user?.name} />
-              </a>
-              <div class="profile__meta">
-                <div class="profile__info">
-                  <div class="profile__info__head">
+              </button>
+              <div className="profile__meta">
+                <div className="profile__info">
+                  <div className="profile__info__head">
                     <Avatar name={user?.name} />
-                    <div class="profile__head__content">
-                      <a href="settings.html">{user?.name}</a>
-                      <p class="tertiary">
+                    <div className="profile__head__content">
+                      <Link href="/settings">{user?.name}</Link>
+                      <p className="tertiary">
                         <a
-                          href="https://pixner.net/cdn-cgi/l/email-protection"
-                          class="__cf_email__"
-                          data-cfemail="cfbda0a8aabdf7fb8fa8a2aea6a3e1aca0a2"
+                          href="mailto:user@example.com"
+                          className="__cf_email__"
                         >
                           {user?.email}
                         </a>
                       </p>
                     </div>
                   </div>
-                  <a href="#">Logout</a>
+                  <button className="logout-button">Logout</button>
                 </div>
               </div>
             </div>
             <button
-              class="navbar-toggler"
+              className="navbar-toggler"
               type="button"
               data-bs-toggle="collapse"
               data-bs-target="#primaryNav"
@@ -50,30 +51,30 @@ export default function navbar() {
               aria-expanded="false"
               aria-label="Toggle Primary Nav"
             >
-              <span class="icon-bar top-bar"></span>
-              <span class="icon-bar middle-bar"></span>
-              <span class="icon-bar bottom-bar"></span>
+              <span className="icon-bar top-bar"></span>
+              <span className="icon-bar middle-bar"></span>
+              <span className="icon-bar bottom-bar"></span>
             </button>
           </div>
           <div
-            class="collapse navbar-collapse justify-content-end order-3 order-xl-2"
+            className="collapse navbar-collapse justify-content-end order-3 order-xl-2"
             id="primaryNav"
           >
-            <ul class="navbar-nav">
-              <li class="nav-item dropdown">
-                <a class="nav-link active" href="/dashboard">
+            <ul className="navbar-nav">
+              <li className="nav-item dropdown">
+                <Link className="nav-link active" href="/dashboard">
                   Home
-                </a>
+                </Link>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/investment">
+              <li className="nav-item">
+                <Link className="nav-link" href="/investment">
                   Investment
-                </a>
+                </Link>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/transaction">
+              <li className="nav-item">
+                <Link className="nav-link" href="/transaction">
                   Transactions
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
