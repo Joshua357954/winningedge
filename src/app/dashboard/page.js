@@ -8,6 +8,7 @@ import axios from "axios";
 import { MyDate, prettifyAmountInNaira } from "@/libs/fn";
 import toast from "react-hot-toast";
 import ProtectedRoute from "@/components/protectedRoute";
+import Link from "next/link";
 
 function Dashboard() {
   const { user, loading, dashboardData, setDashboardData } = useUserStore();
@@ -129,6 +130,14 @@ function Dashboard() {
                     </div>
                   </div>
 
+                  <div className="d-flex justify-content-between align-items-center mt-4">
+                    <h5 className="mb-0">Investment Details</h5>
+                    <Link href="/investments" className="btn btn-primary">
+                      View All
+                    </Link>
+                  </div>
+
+
                   <div className="available__balance">
                     <div className="row">
                       <div className="col-md-6 col-lg-4">
@@ -167,7 +176,6 @@ function Dashboard() {
                       </div>
                     </div>
                   </div>
-
                   <div className="investment__history">
                     <h4>Latest Transactions</h4>
                     <div className="investment__table__wrapper">
