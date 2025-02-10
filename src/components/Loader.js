@@ -7,7 +7,7 @@ const Loader = ({ loading }) => {
       <section
         className="d-flex w-100 vh-100 position-fixed top-0 left-0"
         style={{
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backgroundColor: "rgba(1, 1, 1, 0.3)",
           width: "100vw",
           height: "100vh",
           zIndex: 9999,
