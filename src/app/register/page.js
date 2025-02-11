@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import TheHead from "@/components/theHead";
 import ProtectedRoute from "@/components/protectedRoute";
 
@@ -35,13 +35,14 @@ function Register() {
     toast.loading("Registration In Progress...");
 
     try {
-      const { fullName, email, phone, password } = formData;
+      const { fullName, email, phone, password, confirmPassword } = formData;
 
       const requestBody = {
         fullName,
         email,
         phone,
         password,
+        confirmPassword,
       };
 
       const response = await axios.post("/api/auth/register", requestBody);
@@ -66,6 +67,7 @@ function Register() {
     <>
       <TheHead />
       <header>
+        <Toaster />
         <nav className="navbar navbar-expand-xl">
           <div className="container">
             <a className="navbar-brand" href="/dashboard">

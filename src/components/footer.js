@@ -1,15 +1,17 @@
 import useAuthStore from "@/store/userStore";
+import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { Toaster, toast } from "react-hot-toast";
 import { FaWhatsapp } from "react-icons/fa"; // Import React Icons for WhatsApp
 import { FiLogOut } from "react-icons/fi";
+
 export default function footer() {
   const { user, logout } = useAuthStore();
-  const handleLogout = () => {
-    const router = useRouter(); // Use the router from next/navigation
+  const router = useRouter(); // Use the router from next/navigation
 
+  const handleLogout = () => {
     if (confirm("Are you sure you want to log out?")) {
-      logout(); 
+      logout();
       router.push("/login");
     }
   };
