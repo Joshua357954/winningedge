@@ -65,7 +65,15 @@ function Register() {
   return (
     <>
       <TheHead />
-      <header></header>
+      <header>
+        <nav className="navbar navbar-expand-xl">
+          <div className="container">
+            <a className="navbar-brand" href="/dashboard">
+              <img src="assets/images/logo.png" alt="Logo" className="logo" />
+            </a>
+          </div>
+        </nav>
+      </header>
 
       <section className="register">
         <div className="container">

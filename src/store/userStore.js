@@ -77,7 +77,7 @@ const useAuthStore = create((set) => ({
       localStorage.removeItem("user");
       localStorage.removeItem("DashboardData");
     }
-    Cookies.remove("refresh_token");
+    // Cookies.remove("refresh_token");
   },
 
   refreshAccessToken: async () => {
