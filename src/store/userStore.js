@@ -32,7 +32,7 @@ const getLocalStorage = (key, fallback) => {
 
 // Zustand store
 const useAuthStore = create((set) => ({
-  user: getLocalStorage("user", mockUser),
+  user: getLocalStorage("user", null),
   accessToken: null,
   isAuthenticated: !!getLocalStorage("user", null),
   dashboardData: getLocalStorage("DashboardData", mockDBD),
