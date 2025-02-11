@@ -6,8 +6,11 @@ import { FiLogOut } from "react-icons/fi";
 export default function footer() {
   const { user, logout } = useAuthStore();
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to log out?")) {
-      logout();
+    const router = useRouter(); // Use the router from next/navigation
+
+    if (confirm("Are you sure you want to log out?")) {
+      logout(); 
+      router.push("/login");
     }
   };
   return (
