@@ -1,8 +1,15 @@
+import useAuthStore from "@/store/userStore";
 import Script from "next/script";
 import { Toaster, toast } from "react-hot-toast";
 import { FaWhatsapp } from "react-icons/fa"; // Import React Icons for WhatsApp
-
+import { FiLogOut } from "react-icons/fi";
 export default function footer() {
+  const { user, logout } = useAuthStore();
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      logout();
+    }
+  };
   return (
     <div>
       {/* <!-- ==== footer section start ==== --> */}
@@ -42,16 +49,41 @@ export default function footer() {
                 </div>
               </div>{" "}
               <br />
-              <a
-                href="https://wa.me/234XXXXXXXXXX" // Replace with your WhatsApp number
-                target="_blank"
-                rel="noopener noreferrer"
-                className=" w d-flex align-items-center mt-3 justify-content-center px-3 py-2 rounded-pill "
-                aria-label="Contact us on WhatsApp"
-              >
-                <span className="social me-2">Any Issues? Contact Us on WhatsApp</span>
-                <FaWhatsapp size={24} color="lightgreen" />
-              </a>
+              <div className="d-flex gap-2 align-items-center justify-content-center">
+                <a
+                  href="https://wa.me/234XXXXXXXXXX" // Replace with your WhatsApp number
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className=" w d-flex align-items-center mt-3 justify-content-center px-3 py-2 rounded-pill "
+                  aria-label="Contact us on WhatsApp"
+                >
+                  <span className="social me-2">
+                    Any Issues? Contact Us on WhatsApp
+                  </span>{" "}
+                  <FaWhatsapp size={24} color="lightgreen" />
+                </a>
+                {user?.email ? (
+                  <>
+                    <span className="mt-3 mr-2">|</span>
+                    <button
+                      className="btn-danger w-auto d-flex align-items-center gap-2 px-3 py-1 mt-3 rounded-pill shadow-sm"
+                      type="button"
+                      onClick={handleLogout}
+                      aria-label="Logout"
+                    >
+                      <FiLogOut size={20} />
+                      <span
+                        className="social fw-bold"
+                        style={{ marginTop: "0px" }}
+                      >
+                        Log Out
+                      </span>
+                    </button>
+                  </>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           </div>
           <Toaster position="top-center" />
