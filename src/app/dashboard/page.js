@@ -50,7 +50,10 @@ function Dashboard() {
       <Navbar />
 
       <div className="dashboard section__space__bottom">
-        <div className="container">
+        <div
+          className="container"
+          data-background="assets/images/ready/line-bg.png"
+        >
           <div className="dashboard__area">
             <div className="row">
               <div className="col-xxl-9">
@@ -136,7 +139,6 @@ function Dashboard() {
                       View All
                     </Link>
                   </div>
-
 
                   <div className="available__balance">
                     <div className="row">

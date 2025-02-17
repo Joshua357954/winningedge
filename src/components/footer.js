@@ -54,12 +54,12 @@ export default function footer() {
                 </div>
               </div>{" "}
               <br />
-              <div className="d-flex gap-2 align-items-center justify-content-center">
+              <div className="d-flex flex-row flex-sm-column gap-2 align-items-center justify-content-center">
                 <a
                   href="https://wa.me/234XXXXXXXXXX" // Replace with your WhatsApp number
                   target="_blank"
                   rel="noopener noreferrer"
-                  className=" w d-flex align-items-center mt-3 justify-content-center px-3 py-2 rounded-pill "
+                  className="d-flex align-items-center mt-3 justify-content-center px-3 py-2 rounded-pill"
                   aria-label="Contact us on WhatsApp"
                 >
                   <span className="social me-2">
@@ -67,7 +67,8 @@ export default function footer() {
                   </span>{" "}
                   <FaWhatsapp size={24} color="lightgreen" />
                 </a>
-                {user?.email ? (
+
+                {user?.email && (
                   <>
                     <span className="mt-3 mr-2">|</span>
                     <button
@@ -85,8 +86,6 @@ export default function footer() {
                       </span>
                     </button>
                   </>
-                ) : (
-                  ""
                 )}
               </div>
             </div>
