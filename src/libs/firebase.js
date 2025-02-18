@@ -2,19 +2,18 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
-
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCMbHHoonEkvAFhIT6fiDymJfLSkc5nCpw",
-  authDomain: "winning--edge.firebaseapp.com",
-  projectId: "winning--edge",
-  storageBucket: "winning--edge.firebasestorage.app",
-  messagingSenderId: "901357602953",
-  appId: "1:901357602953:web:ed543877eeb424f5a21e58"
+  apiKey: "AIzaSyDLn_7jwuAxHoUl4NeZXXK8jPSpudSRU2U",
+  authDomain: "winning-82c7f.firebaseapp.com",
+  projectId: "winning-82c7f",
+  storageBucket: "winning-82c7f.firebasestorage.app",
+  messagingSenderId: "248723695316",
+  appId: "1:248723695316:web:f21553ffbca6940f447d41"
 };
+
 
 /// Initialize Firebase
 export default initializeApp(firebaseConfig);
 export const app = initializeApp(firebaseConfig);
 export const firestore = getFirestore(app);
-
