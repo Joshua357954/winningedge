@@ -67,6 +67,7 @@ function Deposit() {
 
       if (amount > 50000 || amount < 10000) {
         toast.error("Amount must be between 10,000 and 50,000!");
+        return;
       }
 
       try {
