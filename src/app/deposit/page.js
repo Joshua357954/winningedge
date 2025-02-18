@@ -65,6 +65,10 @@ function Deposit() {
 
       const data = { amount, userId: user?.email };
 
+      if (amount > 50000 || amount < 10000) {
+        toast.error("Amount must be between 10,000 and 50,000!");
+      }
+
       try {
         toast.loading("Creating Deposit Order...");
         const response = await axios.post("/api/investment/deposit", data);
@@ -130,13 +134,13 @@ function Deposit() {
                               <div className="invest__limit">
                                 <div className="d-flex align-items-center justify-content-between">
                                   <p>Min. Invest</p>
-                                  <p>₦4000</p>
+                                  <p>₦10,000</p>
                                 </div>
                               </div>
                               <div className="invest__limit mb-35">
                                 <div className="d-flex align-items-center justify-content-between">
                                   <p>Max. Invest</p>
-                                  <p>₦4,000,000</p>
+                                  <p>₦50,000</p>
                                 </div>
                               </div>
                             </div>
