@@ -6,6 +6,7 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import TheHead from "@/components/theHead";
 import ProtectedRoute from "@/components/protectedRoute";
+import Logo from "@/components/Logo";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -70,9 +71,7 @@ function Register() {
         <Toaster />
         <nav className="navbar navbar-expand-xl">
           <div className="container">
-            <a className="navbar-brand" href="/dashboard">
-              <img src="assets/images/logo.png" alt="Logo" className="logo" />
-            </a>
+            <Logo/>
           </div>
         </nav>
       </header>

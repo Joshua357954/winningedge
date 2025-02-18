@@ -5,6 +5,7 @@ import Link from "next/link";
 import Avatar from "./avatar";
 import useUserStore from "@/store/userStore";
 import { Toaster } from "react-hot-toast";
+import Logo from "./Logo";
 
 export default function Navbar() {
   const { user } = useUserStore();
@@ -14,9 +15,7 @@ export default function Navbar() {
       <Toaster />
       <nav className="navbar navbar-expand-xl">
         <div className="container">
-          <Link className="navbar-brand" href="/dashboard">
-            <img src="/assets/images/logo.png" alt="Logo" className="logo" />
-          </Link>
+          <Logo/>
 
           <div className="navbar__out order-2 order-xl-3">
             <div className="dashboard__nav">

@@ -2,6 +2,7 @@
 import Image from "next/image";
 import TheHead from "@/components/theHead";
 import Footer from "@/components/footer";
+import Logo from "@/components/Logo";
 export default function Home() {
   return (
     <>
@@ -9,9 +10,7 @@ export default function Home() {
       <header>
         <nav className="navbar navbar-expand-xl">
           <div className="container">
-            <a className="navbar-brand" href="/dashboard">
-              <img src="assets/images/logo.png" alt="Logo" className="logo" />
-            </a>
+          <Logo/>
           </div>
         </nav>
       </header>

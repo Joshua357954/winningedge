@@ -7,6 +7,7 @@ import useUserStore from "@/store/userStore";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
 import ProtectedRoute from "@/components/protectedRoute";
+import Logo from "@/components/Logo";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -44,9 +45,7 @@ function Login() {
         <Toaster />
         <nav className="navbar navbar-expand-xl">
           <div className="container">
-            <a className="navbar-brand" href="/dashboard">
-              <img src="assets/images/logo.png" alt="Logo" className="logo" />
-            </a>
+            <Logo/>
           </div>
         </nav>
       </header>
