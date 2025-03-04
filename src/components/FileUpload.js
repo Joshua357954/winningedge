@@ -75,7 +75,7 @@ const UploadFile = ({ value, onChange }) => {
   };
 
   return (
-    <div className="rounded-lg shadow-md mb-5 p-4">
+    <div className="rounded-lg shadow-md mb-3 ">
       <p className="text-md text-red-600 my-3">
         Upload the receipt of your deposit
       </p>
