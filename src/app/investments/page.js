@@ -25,7 +25,14 @@ function Investment() {
         );
         toast.success("Investments Fetched");
         setActiveInvestments(data?.activeInvestments);
-        setCompletedInvestments(data?.completedInvestments);
+        console.log("ACTIVE INVESTMENT :", data?.activeInvestments);
+        setCompletedInvestments(
+          (data?.completedInvestments || []).filter(
+            (investment) => investment.withdrawalStatus !== "SENT_TO_USER"
+          )
+        );
+
+        console.log("INV COMPLETE :", data?.completedInvestments);
       } catch (error) {
         toast.error(`Error fetching investment data: ${error}`);
       } finally {

@@ -9,8 +9,6 @@ const toDate = (timestamp) =>
 const processInvestments = (investments, durationMs) =>
   investments.filter(
     ({ datetime, completionDate, id, withdrawalStatus, reInvested }) => {
-      // if (!withdrawalStatus) return false; Ensure withdrawalStatus is true
-      // if (reInvested) return false
       const start = toDate(datetime),
         end = toDate(completionDate);
       if (!start || !end) return false;
@@ -71,7 +69,11 @@ export async function GET(req) {
     // Balance calculations
     const bal1 = completedInvestments.reduce(
       (sum, inv) =>
-        inv?.reInvested ? sum : sum + Number(inv.totalAmount || 0),
+        inv?.reInvested ||
+        inv.withdrawalStatus === "IN_PROGRESS" ||
+        inv.withdrawalStatus === "SENT_TO_USER"
+          ? sum
+          : sum + Number(inv.totalAmount || 0),
       0
     );
 

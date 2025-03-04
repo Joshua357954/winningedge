@@ -13,6 +13,7 @@ import TheHead from "@/components/theHead";
 import Loader from "@/components/Loader";
 import toast from "react-hot-toast";
 import ProtectedRoute from "@/components/protectedRoute";
+import UploadFile from "@/components/FileUpload";
 
 function Deposit() {
   // const [user, setUser] = useState(null);
@@ -25,6 +26,12 @@ function Deposit() {
     totalProfit: "0.00",
     totalAmount: "0.00",
   });
+
+  const [fileBase64, setFileBase64] = useState("");
+
+  const handleFileChange = (base64) => {
+    setFileBase64(base64);
+  };
 
   useEffect(() => {
     const numAmount = Number(amount);
@@ -43,6 +50,7 @@ function Deposit() {
         const { data } = await axios.get(
           `/api/investment/get?userId=${user?.email}`
         );
+        console.log(data?.activeInvestments);
         toast.success("Checking Active Investments Complete");
         setActiveInvestments(data?.activeInvestments || []);
       } catch (error) {
@@ -63,10 +71,17 @@ function Deposit() {
       if (activeInvestments?.length > 0)
         return toast.error("You Have A Running Investment");
 
-      const data = { amount, userId: user?.email };
-
+      const data = { amount, userId: user?.email, file: fileBase64 };
+      if (!fileBase64) {
+        toast.error("Plesae Attach You Receipt Below");
+        return;
+      }
       if (amount > 50000 || amount < 10000) {
         toast.error("Amount must be between 10,000 and 50,000!");
+        return;
+      }
+
+      if (!confirm("Are you sure you want to this DEPOSIT ? ")) {
         return;
       }
 
@@ -77,6 +92,7 @@ function Deposit() {
         if (response.data.message) {
           setAmount(0);
           toast.success("Deposit Complete");
+          setActiveInvestments([data]);
         }
       } catch (error) {
         toast.dismiss();
@@ -149,11 +165,12 @@ function Deposit() {
                         </div>
                       </div>
                     </div>
+
                     <Loader loading={isLoading} />
                     <fieldset style={{ marginTop: "20px" }}>
                       <div>
                         <label className="secondary content__space--extra--small">
-                          Enter The Amount
+                          Enter The Amount You Deposited
                         </label>
                         <input
                           type="number"
@@ -200,6 +217,11 @@ function Deposit() {
                             </div>
                           </div>
                         </div>
+
+                        <UploadFile
+                          value={fileBase64}
+                          onChange={handleFileChange}
+                        />
                         <div className="plan__cta text-start">
                           {isLoading ? (
                             <p className="text-primary fw-bold">

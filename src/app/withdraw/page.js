@@ -17,7 +17,10 @@ const investments = [
 
 function Withdraw() {
   const { user } = useUserStore();
+  const [loading, setLoading] = useState(false);
+  const [completedInvestments, setCompletedInvestments] = useState([]);
 
+  // Form Data State
   const [formData, setFormData] = useState({
     account_number: "",
     account_name: "",
@@ -26,6 +29,7 @@ function Withdraw() {
     userId: user?.email || "",
   });
 
+  // Reset Form (Function)
   const resetForm = () => {
     setFormData({
       account_number: "",
@@ -35,6 +39,8 @@ function Withdraw() {
       userId: user?.email || "",
     });
   };
+
+  // Handle Change (for form)
   const handleChange = (e) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -42,6 +48,7 @@ function Withdraw() {
     }));
   };
 
+  // Set Deposit For Withdrawal
   const handleDepositClick = (deposit) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -50,6 +57,7 @@ function Withdraw() {
     }));
   };
 
+  // Send Withdrawal Order To Backend
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -57,13 +65,27 @@ function Withdraw() {
       toast.error("Please select an investment to withdraw.");
       return;
     }
-
+    setLoading(true)
+    toast.loading("Withdrawal In Progress..")
     try {
       const response = await axios.post("/api/investment/withdraw", formData);
       toast.success("Withdrawal request submitted successfully!");
+
+      // Remove the investment with matching depositId
+      setCompletedInvestments((prevInvestments) =>
+        prevInvestments.filter(
+          (investment) => investment.depositId !== formData.depositId
+        )
+      );
+      // Clear Input Fields
       resetForm();
-      console.log(response.data);
+      // console.log(response.data);
+      setLoading(false)
+      toast.dismiss()
+      toast.success("Withdrawal Complete")
     } catch (error) {
+      toast.dismiss()
+      setLoading(false)
       toast.error("An error occurred. Please try again.");
       console.error(
         error.response?.data?.message || "An error occurred. Please try again."
@@ -71,20 +93,27 @@ function Withdraw() {
     }
   };
 
-  const [completedInvestments, setCompletedInvestments] = useState([]);
-
+  // Fetch Available Investments
   useEffect(() => {
     async function getWithdrawalble() {
       toast.loading("Fetching Available Investments");
-
+      setLoading(true)
       try {
         const { data } = await axios.get(
           `/api/investment/get?userId=${user?.email}`
         );
         toast.dismiss();
         toast.success("Completed Check");
-        setCompletedInvestments(data?.completedInvestments || []);
+        setCompletedInvestments(
+          (data?.completedInvestments || []).filter(
+            (investment) =>
+              investment.withdrawalStatus !== "IN_PROGRESS" &&
+              investment.withdrawalStatus !== "SENT_TO_USER"
+          )
+        );
+        setLoading(true)
       } catch (error) {
+        setLoading(false)
         toast.dismiss();
         toast.error("Error fetching investments");
       }
@@ -228,7 +257,7 @@ function Withdraw() {
                         </p>
 
                         <div className="plan__cta text-start">
-                          <button className="button primary" type="submit">
+                          <button className="button primary" disabled={loading} type="submit">
                             Withdraw Funds
                           </button>
                         </div>

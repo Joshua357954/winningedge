@@ -202,6 +202,10 @@ function Dashboard() {
                                 <td>
                                   {tx?.reInvested
                                     ? "ReInvested"
+                                    : tx?.withdrawalStatus === "IN_PROGRESS"
+                                    ? "Withdrawal Pending"
+                                    : !tx?.completionDate
+                                    ? "Deposit Pending"
                                     : tx?.withdrawalStatus !== ""
                                     ? "Withdrawal"
                                     : "Deposit"}

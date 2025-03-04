@@ -8,8 +8,9 @@ const toDate = (timestamp) =>
     : null;
 
 const processInvestments = (investments, durationMs) =>
-  investments.filter(({ datetime, completionDate, id, reInvested }) => {
-    // if (reInvested) return false
+  investments.filter(({ datetime, completionDate, id, withdrawalStatus }) => {
+    if (withdrawalStatus == "SENT_TO_USER") return false; // Automatically mark as completed
+
     const start = toDate(datetime),
       end = toDate(completionDate);
     if (!start || !end) return false;
@@ -58,7 +59,9 @@ export async function GET(req) {
 
     const completedInvestments = processInvestments(investments, durationMs);
     const activeInvestments = investments.filter(
-      (inv) => !completedInvestments.includes(inv)
+      (inv) =>
+        inv.withdrawalStatus !== "IN_PROGRESS" &&
+        inv.withdrawalStatus !== "SENT_TO_USER"
     );
 
     console.log(

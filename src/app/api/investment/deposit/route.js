@@ -2,29 +2,15 @@ import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { firestore } from "@/libs/firebase";
 import { NextResponse } from "next/server";
 
-const getFutureTimestamp = (duration) => {
-  const units = { secs: 1000, mins: 60000, hours: 3600000, days: 86400000 };
-  const match = duration?.match(/^(\d+)(secs|mins|hours|days)$/);
-  if (!match) return null;
-
-  const [, value, unit] = match;
-  return Timestamp.fromMillis(Date.now() + Number(value) * units[unit]);
-};
-
 export async function POST(req) {
   try {
-    const { amount, userId } = await req.json();
+    const { amount, userId, file } = await req.json();
     console.log("Data Seen:", amount, userId);
 
-    // Check if amount and userId are present in the request
     if (!amount || !userId) {
-      return NextResponse.json(
-        { error: "Amount and User ID are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Amount and User ID are required" }, { status: 400 });
     }
 
-    // Ensure amount is a number
     const parsedAmount = Number(amount);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
       return NextResponse.json({ error: "Invalid amount" }, { status: 400 });
@@ -32,11 +18,11 @@ export async function POST(req) {
 
     // Calculate profit
     const percentageIncrease = 2; // 2% daily increase
-    const dailyProfit = (parsedAmount * 0.02).toFixed(2); // Fixed daily profit
-    const totalProfit = (dailyProfit * 30).toFixed(2); // 30-day total profit
-    const totalAmount = parsedAmount + Number(totalProfit); // Final amount after 30 days
+    const dailyProfit = (parsedAmount * 0.02).toFixed(2);
+    const totalProfit = (dailyProfit * 30).toFixed(2);
+    const totalAmount = parsedAmount + Number(totalProfit);
 
-    // Add deposit document to Firestore
+    // Save deposit in Firestore
     const docRef = await addDoc(collection(firestore, "deposits"), {
       amount: parsedAmount,
       userId,
@@ -46,9 +32,10 @@ export async function POST(req) {
       totalProfit,
       totalAmount,
       reInvested: false,
-      withdrawalStatus: "", // IN_PROGRESS, SENT_TO_USER
-      datetime: Timestamp.now(), // Set current timestamp for deposit creation
-      completionDate: null, // Completion date not set yet
+      withdrawalStatus: "",
+      datetime: Timestamp.now(),
+      completionDate: null,
+      fileBase64: file, // Store only Base64 (compressed)
     });
 
     return NextResponse.json(
