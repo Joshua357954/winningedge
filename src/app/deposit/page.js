@@ -67,20 +67,24 @@ function Deposit() {
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
+      // User Not Found
       if (!user) return toast.error("User not found. Please log in.");
+      // Checking For Active Investments
       if (activeInvestments?.length > 0)
         return toast.error("You Have A Running Investment");
 
       const data = { amount, userId: user?.email, file: fileBase64 };
+      // Check If Attached Receipt
       if (!fileBase64) {
         toast.error("Plesae Attach You Receipt Below");
         return;
       }
+      // Check Applicable Amount
       if (amount > 50000 || amount < 10000) {
         toast.error("Amount must be between 10,000 and 50,000!");
         return;
       }
-
+      // Confirm If They Want To Proceed With Deposit
       if (!confirm("Are you sure you want to this DEPOSIT ? ")) {
         return;
       }
@@ -106,7 +110,7 @@ function Deposit() {
         setIsLoading(false);
       }
     },
-    [amount, user, activeInvestments]
+    [amount, user, activeInvestments,fileBase64]
   );
 
   return (

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const compressImage = (
   file,
@@ -7,7 +7,9 @@ const compressImage = (
   maxHeight = 500,
   quality = 0.7
 ) => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
+    if (!file) return reject("No file provided");
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (event) => {
@@ -15,8 +17,7 @@ const compressImage = (
       img.src = event.target.result;
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        let width = img.width;
-        let height = img.height;
+        let { width, height } = img;
 
         // Resize image
         if (width > maxWidth || height > maxHeight) {
@@ -38,38 +39,46 @@ const compressImage = (
         const compressedBase64 = canvas.toDataURL("image/jpeg", quality);
         resolve(compressedBase64);
       };
+      img.onerror = () => reject("Image load error");
     };
+    reader.onerror = () => reject("File reading error");
   });
 };
 
-const UploadFile = ({ onChange }) => {
+const UploadFile = ({ value, onChange }) => {
   const [fileName, setFileName] = useState("");
-  const [preview, setPreview] = useState("");
+
+  useEffect(() => {
+    if (!value) setFileName(""); // Clear file name if value is reset
+  }, [value]);
 
   const handleFileChange = async (event) => {
     const selectedFile = event.target.files[0];
 
-    if (selectedFile) {
-      setFileName(selectedFile.name);
+    if (!selectedFile) return;
 
-      // Compress the image before converting to Base64
+    if (!selectedFile.type.startsWith("image/")) {
+      alert("Please select a valid image file.");
+      return;
+    }
+
+    setFileName(selectedFile.name);
+
+    try {
       const compressedBase64 = await compressImage(selectedFile);
-
-      // Remove the prefix to store only raw Base64
       const base64String = compressedBase64.split(",")[1];
 
-      // Update state and pass Base64 to parent
-      setPreview(compressedBase64); // Show preview
-      onChange(base64String);
+      onChange(base64String); // Pass Base64 to parent
+    } catch (error) {
+      console.error("Error compressing image:", error);
     }
   };
 
   return (
-    <div className="rounded-lg shadow-md mb-5">
+    <div className="rounded-lg shadow-md mb-5 p-4">
       <p className="text-md text-red-600 my-3">
         Upload the receipt of your deposit
       </p>
-
       <input
         type="file"
         accept="image/*"
@@ -79,6 +88,13 @@ const UploadFile = ({ onChange }) => {
       {fileName && (
         <p className="text-sm text-gray-600">Selected: {fileName}</p>
       )}
+      {/* {value && (
+        <img
+          src={`data:image/jpeg;base64,${value}`}
+          alt="Preview"
+          className="mt-2 w-32 h-32 object-cover rounded"
+        />
+      )} */}
     </div>
   );
 };
